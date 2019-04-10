@@ -1,0 +1,34 @@
+EN ATTENTE -> Écran d'acceuil.
+EN COURS   -> Un personnage capable de bouger dans l'axe verticale, horizontal et vertical et tirer des projectiles.
+EN ATTENTE -> Détection de collision avec les projectiles, ennemies et joueur.
+EN ATTENTE -> Écran de Game Over.
+EN ATTENTE -> Débugueur.
+
+EN ATTENTE -> Sprite du joueur
+EN ATTENTE -> Sprite de classic
+EN ATTENTE -> Sprite de zigzageur
+EN ATTENTE -> Sprite de speedeur
+EN ATTENTE -> Sprite du boss
+EN ATTENTE -> Sprite des projectile
+
+EN ATTENTE -> Le joueur n'as qu'une vie.
+EN ATTENTE -> Éffacer de la mémoire les projectile hors de l'écran(évité les lags).
+EN ATTENTE -> 10 vagues différentes d'énemies et un boss a la fin, puis recommencer les vagues.
+EN ATTENTE -> Avoir un score pour les énemies tué .
+EN ATTENTE -> Un high score.
+
+EN ATTENTE -> particule d'explosion quand collision.
+EN ATTENTE -> signe indiquant le changement de vagues et un changement spécial pour le boss
+EN ATTENTE -> essayer d'implémenter des vibrations.
+
+EN ATTENTE -> 3 énemies:
+    EN ATTENTE -> zigzageur: se déplace en zigzag et est composé de plusieurs boulles pour son corps formant une chaîne (si touché la partie du corp touché se détruit mais le reste récupere la même trajectoire), 1 point de vertical, n'attaque pas mais gène avec son corp
+    EN ATTENTE -> speedeur: se déplace rapidement et de façon très droite sans vélocité, 3 point de vie, attaque lentement, même attaque que le classic
+    EN ATTENTE -> classic: énemies classique se déplace avec une légère vélocité, 3 point de vie, attaque rapidement, le projectile vas dans la position du joueur mais ne le suis pas
+    EN ATTENTE -> boss: phase de mouvement, phase statique et d'attaque en cercle, 100 point de vertical, attaque en cercle autour de lui.
+
+EN ATTENTE -> Pour plus tard:
+    EN ATTENTE -> bonus améliorant la rejouabilité.
+    EN ATTENTE -> éditeur de vagues.
+    EN ATTENTE -> vagues random.
+    
