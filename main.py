@@ -1,18 +1,34 @@
 import pyxel as px
+from entities import Entities
+
 
 class App:
     def __init__(self):
-        px.init(160, 120)
+        px.init(160, 160)
         self.x = 0
         self.y = 0
         px.run(self.update, self.draw)
 
     def update(self):
-        self.x = (self.x + 1) % px.width
-        self.y = (self.y + 1) % px.height
+
+        def update_player():
+            p_speed = 3
+            if px.btnp(px.KEY_UP, 1, 1):
+                self.y -= p_speed
+            if px.btnp(px.KEY_DOWN, 1, 1):
+                self.y += p_speed
+            if px.btnp(px.KEY_LEFT, 1, 1):
+                self.x -= p_speed
+            if px.btnp(px.KEY_RIGHT, 1, 1):
+                self.x += p_speed
+        update_player()
+
+        # Activate the Entity Class, Entity class only activate a draw rect for now
+        self.player = Entities(self.x, self.y, self.x + 7, self.y + 7)
 
     def draw(self):
         px.cls(0)
-        px.rect(self.x, self.y, self.x + 7, self.y + 7, 9)
+        self.player.draw()
+
 
 App()
