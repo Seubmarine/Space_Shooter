@@ -1,12 +1,15 @@
 import pyxel as px
-from entities import Entities
+from entities import Entities, Spacecraft, Bullet
 
+WIDTH = 150
+LENGTH = 200
 
 class App:
     def __init__(self):
-        px.init(160, 160)
-        self.x = 0
-        self.y = 0
+        px.init(WIDTH, LENGTH)
+        self.x = WIDTH // 2
+        self.y = LENGTH // 2
+        self.shoot = False
         px.run(self.update, self.draw)
 
     def update(self):
@@ -22,13 +25,20 @@ class App:
             if px.btnp(px.KEY_RIGHT, 1, 1):
                 self.x += p_speed
         update_player()
-
+        
         # Activate the Entity Class, Entity class only activate a draw rect for now
-        self.player = Entities(self.x, self.y, self.x + 7, self.y + 7)
+        self.player = Spacecraft(self.x, self.y, self.x + 15, self.y + 15, 4)
+        self.bullet = Bullet(self.x + 7, self.y - 2, self.x + 8, self.y - 1, 5)
+        self.bullet.update()
 
     def draw(self):
         px.cls(0)
         self.player.draw()
-
+        self.bullet.draw()
+        
+        # px.rect(self.x + 7, self.y - 2, self.x + 8, self.y - 1, 7)
+        
+        # Test line
+        px.line(55, 23, 65, 90, 12)
 
 App()
