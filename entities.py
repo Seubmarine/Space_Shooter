@@ -8,20 +8,23 @@ class Entities:
         self.h = h
         self.w = w
         self.col = col
-        # self.list_entity = []
 
     def update(self):
         pass
 
     def draw(self):
-        # self.list_entity.append([self.x, self.y, self.h, self.w, self.col])
-        # for entity in self.list_entity:
-        #     px.rect(*entity)
         pass
 
 
 class Bullet(Entities):
-    pass
+
+    def update(self):
+        self.y -= 2
+        if self.y < 0:
+            del self # la bullet sort de l'écran
+
+    def draw(self):
+        px.rect(self.x, self.y, self.x + self.h, self.y + self.w, self.col)
 
 
 class Spacecraft(Entities):
@@ -29,7 +32,7 @@ class Spacecraft(Entities):
         self.speed = 3
         super().__init__(x, y, h, w, col)
 
-    def update(self):
+    def update(self, player_bullets):
         if px.btnp(px.KEY_UP, 1, 1):
             self.y -= self.speed
         if px.btnp(px.KEY_DOWN, 1, 1):
@@ -38,6 +41,11 @@ class Spacecraft(Entities):
             self.x -= self.speed
         if px.btnp(px.KEY_RIGHT, 1, 1):
             self.x += self.speed
+        if px.btnp(px.KEY_SPACE, 10, 10):
+            player_bullets.append(
+                Bullet(self.x + 7, self.y - 2, 2, 2, 7)
+            )
+
 
     def draw(self):
         px.rect(self.x, self.y, self.x + self.h, self.y + self.w, self.col)
