@@ -19,19 +19,27 @@ class App:
     def __init__(self):
         px.init(WIDTH, LENGTH, fps=FPS)
 
-        self.player = Spacecraft(WIDTH // 2, LENGTH // 2, 15, 15, 6)
-        self.player_bullets = []
-        self.ennemy = En3()
         self.stt = time()  # Starting Time
+        self.pt = self.stt  # Buffer Time
+        self.dt = 0  # initialize delta time
+
+        self.player = Spacecraft(WIDTH / 2 - 8, LENGTH / 2 - 8, 15, 15, YELLOW)
+        self.player_bullets = []
+        self.ennemy = En3(WIDTH / 2, LENGTH / 2, 0, 0, GREEN)
 
         px.run(self.update, self.draw)
 
     def update(self):
-        self.player.update(self.player_bullets)
-        for bullet in self.player_bullets:
-            bullet.update()
 
-        self.ennemy.update()
+        t = time()            # actual time
+        dt = t - self.pt     # give the time between the previous update and now
+        self.pt = t           # previous_time set to the actual time so that the next time it will be compared it become the differance with the new update
+
+        self.player.update(dt, self.player_bullets)
+        for bullet in self.player_bullets:
+            bullet.update(dt)
+
+        self.ennemy.update(dt, t, self.stt)
 
     def draw(self):
         px.cls(0)
