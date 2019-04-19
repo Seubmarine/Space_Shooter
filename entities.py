@@ -14,6 +14,16 @@ class Entities:
         self.w = w
         self.col = col
 
+        self.stt = time()  # Starting time
+        self.pt = self.stt  # Buffer Time
+
+    def delta_time(self):
+        """Return the time between this update and the previous one."""
+        t = time()  # actual time
+        dt = t - self.pt  # give the time between the previous update and now
+        self.pt = t      # previous_time set to the actual time so that the next time it will be compared it become the differance with the new update
+        return dt
+
     def update(self):
         pass
 
@@ -27,10 +37,11 @@ class En3:
         self.y = LENGTH / 2
         self.speed = 3
         self.pt = 0
-        self.distance = 40
+        self.distance = 120
         self.modulo = 0
         self.dt = 0
-        self.speed = 2
+        self.stt = time()
+        self.col = GREEN
 
     def update(self):
 
@@ -38,36 +49,38 @@ class En3:
         self.dt = t - self.pt  # give the time between the previous update and now
         self.pt = t      # previous_time set to the actual time so that the next time it will be compared it become the differance with the new update
 
-        self.modulo = t % self.speed
+        self.modulo = (t - self.stt) % 1
 
-        print(self.modulo)
-
-        if self.modulo < (self.speed / 4):
+        if self.modulo < 0.24:
             self.y += self.distance * self.dt
-        elif self.modulo < (self.speed / 4) * 2:
+        elif self.modulo < 0.49:
             self.x -= self.distance * self.dt
-        elif self.modulo < (self.speed / 4) * 3:
+        elif self.modulo < 0.74:
             self.y += self.distance * self.dt
-        elif self.modulo < (self.speed / 4)* 4:
+        elif self.modulo < 0.99:
             self.x += self.distance * self.dt
 
         if self.x > WIDTH:
             self.x = 0
-        if self.x < 0:
+        elif self.x < 0:
             self.x = WIDTH
-        if self.y > LENGTH:
+        elif self.y > LENGTH:
             self.y = 0
-        if self.y < 0:
+        elif self.y < 0:
             self.y = LENGTH
 
     def draw(self):
-        px.circb(self.x, self.y, 4, GREEN)
+        px.circb(self.x, self.y, 4, self.col)
 
 
 class Bullet(Entities):
 
+    def __init__(self, x, y, h, w, col=GREEN):
+        super().__init__(x, y, h, w, col)
+
     def update(self):
-        self.y -= 2
+        dt = self.delta_time()
+        self.y -= 120 * dt
         if self.y < 0:
             del self  # la bullet sort de l'écran
 
@@ -78,13 +91,10 @@ class Bullet(Entities):
 class Spacecraft(Entities):
     def __init__(self, x, y, h, w, col):
         self.speed = 100  # player speed per second
-        self.pt = 0
         super().__init__(x, y, h, w, col)
 
     def update(self, player_bullets):
-        t = time()
-        dt = t - self.pt
-        self.pt = t
+        dt = self.delta_time()
 
         def borders_collision():
             if self.x > WIDTH - self.h - 1:

@@ -3,14 +3,14 @@ from entities import Entities, Spacecraft, Bullet, En3
 from time import time
 import math
 
-WIDTH = 150
-LENGTH = 200
-
 WHITE = 7
 RED = 8
 YELLOW = 10
 GREEN = 11
 BLUE = 12
+
+WIDTH = 150
+LENGTH = 200
 
 FPS = 60
 
