@@ -2,7 +2,8 @@ import pyxel as px
 from entities import Entities, Spacecraft, Bullet, En3
 from time import time
 import math
-import threading # for debug every 1 sec
+import threading  # for debug every 1 sec
+import os
 
 WHITE = 7
 RED = 8
@@ -19,6 +20,7 @@ FPS = 60
 class App:
     def __init__(self):
         px.init(WIDTH, HEIGHT, fps=FPS)
+        px.load(os.getcwd() + '/game_assets.pyxel')
 
         self.stt = time()  # Starting Time
         self.pt = self.stt  # Buffer Time
@@ -45,8 +47,9 @@ class App:
         self.player.update(dt, self.player_bullets)
         for bullet in self.player_bullets:
             bullet.update(dt)
-            if bullet.y < 0: # if attribute y of actual bullet is over the screen
-                self.player_bullets.pop(0) # delete object at index 0 where the actual bullet is located
+            if bullet.y < 0:  # if attribute y of actual bullet is over the screen
+                # delete object at index 0 where the actual bullet is located
+                self.player_bullets.pop(0)
         self.ennemy.update(dt, t, self.stt)
 
     def draw(self):
@@ -55,7 +58,6 @@ class App:
         # Test line
         px.line(WIDTH / 2, 0, WIDTH/2, HEIGHT, RED)
         px.line(0, HEIGHT/2, WIDTH, HEIGHT/2, RED)
-
         self.player.draw()
         for bullet in self.player_bullets:
             bullet.draw()

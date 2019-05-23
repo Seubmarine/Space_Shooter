@@ -96,4 +96,5 @@ class Spacecraft(Entities):
         self.borders_collision()
 
     def draw(self):
-        px.rectb(self.x, self.y, self.x + self.h, self.y + self.w, self.col)
+        # px.rectb(self.x, self.y, self.x + self.h, self.y + self.w, self.col)
+        px.blt(self.x, self.y, 0, 0, 0, 16, 16, 0)
