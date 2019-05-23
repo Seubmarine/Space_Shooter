@@ -1,18 +1,12 @@
 import pyxel as px
 from entities import Entities, Spacecraft, Bullet, En3
+from constants import WIDTH, HEIGHT, GREEN, RED, YELLOW
 from time import time
 import math
 import threading  # for debug every 1 sec
 import os
 
-WHITE = 7
-RED = 8
-YELLOW = 10
-GREEN = 11
-BLUE = 12
 
-WIDTH = 150
-HEIGHT = 200
 
 FPS = 60
 

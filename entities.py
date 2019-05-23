@@ -1,9 +1,6 @@
 import pyxel as px
 from time import time
-
-WIDTH = 150
-HEIGHT = 200
-GREEN = 11
+from constants import WIDTH, HEIGHT, GREEN
 
 
 class Entities:
