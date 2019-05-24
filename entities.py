@@ -1,6 +1,7 @@
 import pyxel as px
+import math
 from time import time
-from constants import WIDTH, HEIGHT, GREEN
+from constants import WIDTH, HEIGHT, GREEN, RED, YELLOW
 
 
 class Entities:
@@ -16,6 +17,66 @@ class Entities:
 
     def draw(self):
         pass
+
+
+class En1:
+    def __init__(self, x, y=0, delay=0):
+        self.startpoint_x = x
+        self.y = y
+        self.birth = None
+        self.delay = delay
+
+    def update(self, dt, t):
+
+        self.y += 40 * dt
+        movx = math.cos((t - self.birth) * 4) * 16
+        # this add the first given coordinate + the x movement because x is already changing in the loop
+        self.x = self.startpoint_x + movx
+
+        if self.y > HEIGHT:
+            self.y = 0
+
+    def draw(self):
+        px.rectb(self.x - 8, self.y - 8, self.x + 8, self.y + 8, YELLOW)
+
+
+class En2:
+    def __init__(self, x, delay=0, color=RED, direction=1):
+        self.x = x
+        self.y = -8
+        self.cx = x
+        self.cy = self.y
+        self.birth = None
+        self.delay = delay
+        self.color = color
+        self.dir = direction
+
+    def update(self, dt, t):
+
+        self.cx += 30 * dt * self.dir
+        self.cy += 20 * dt
+
+        movx = math.cos((t - self.birth) * 4) * 16 * self.dir
+        movy = math.sin((t - self.birth) * 4) * 16 * - 1
+
+        self.x = self.cx + movx
+        self.y = self.cy + movy
+
+        if self.x < 0:
+            self.x = WIDTH
+            self.cx += WIDTH
+        if self.x > WIDTH:
+            self.x = 0
+            self.cx -= WIDTH
+        if self.y < 0:
+            self.y = HEIGHT
+            self.cy += HEIGHT
+        if self.y > HEIGHT:
+            self.y = 0
+            self.cy -= HEIGHT
+
+    def draw(self):
+        px.circb(self.x, self.y, 4, self.color)
 
 
 class En3(Entities):
