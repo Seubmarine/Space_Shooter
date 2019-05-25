@@ -12,19 +12,19 @@ class App:
         px.init(WIDTH, HEIGHT, fps=FPS)
         px.load(os.getcwd() + '/game_assets.pyxel')
 
-        def en2(x, delay=0, color=RED, direction=1):
+        def en2(x, delay=0, col=RED, direction=1):
             for e in range(7):
                 d = e * 0.15 + delay
                 self.vague.append(
-                    En2(x, delay=d, color=color, direction=direction))
+                    En2(x, delay=d, col=col, direction=direction))
 
         self.stt = time()  # Starting Time
         self.pt = self.stt  # Buffer Time
         self.dt = 0  # initialize delta time
 
-        self.player = Spacecraft(WIDTH / 2 - 8, HEIGHT / 2 - 8, 15, 15, YELLOW)
+        self.player = Spacecraft(WIDTH / 2 - 8, HEIGHT / 2 - 8, YELLOW)
         self.player_bullets = []
-        self.vague = [En3(WIDTH / 2, HEIGHT, 0, 0, 0, GREEN),
+        self.vague = [En3(WIDTH / 2, HEIGHT, 0, GREEN),
                       En1(WIDTH / 3)]
         en2(WIDTH / 8 * 7, direction=-1)
 

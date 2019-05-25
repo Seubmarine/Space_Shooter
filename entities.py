@@ -5,26 +5,29 @@ from constants import WIDTH, HEIGHT, GREEN, RED, YELLOW
 
 
 class Entities:
-    def __init__(self, x, y, h, w, col):
+    def __init__(self, x, y, col):
         self.x = x
         self.y = y
-        self.h = h
-        self.w = w
         self.col = col
 
     def update(self):
         pass
 
     def draw(self):
-        pass
+        px.line(0, 0, self.x, self.y, RED)
 
 
-class En1:
-    def __init__(self, x, y=0, delay=0):
-        self.startpoint_x = x
-        self.y = y
+class Enemies(Entities):
+    def __init__(self, x, y, delay, col):
         self.birth = None
         self.delay = delay
+        super().__init__(x, y, col)
+
+
+class En1(Enemies):
+    def __init__(self, x, delay=0, y=0, col=9):
+        self.startpoint_x = x
+        super().__init__(x, y, delay, col)
 
     def update(self, dt, t):
 
@@ -38,18 +41,17 @@ class En1:
 
     def draw(self):
         px.rectb(self.x - 8, self.y - 8, self.x + 8, self.y + 8, YELLOW)
+        # super().draw() # to see method heritage of Entities
 
 
-class En2:
-    def __init__(self, x, delay=0, color=RED, direction=1):
+class En2(Enemies):
+    def __init__(self, x, delay=0, col=RED, direction=1, y=0):
         self.x = x
         self.y = -8
         self.cx = x
         self.cy = self.y
-        self.birth = None
-        self.delay = delay
-        self.color = color
         self.dir = direction
+        super().__init__(x, y, delay, col,)
 
     def update(self, dt, t):
 
@@ -76,17 +78,18 @@ class En2:
             self.cy -= HEIGHT
 
     def draw(self):
-        px.circb(self.x, self.y, 4, self.color)
+        px.circb(self.x, self.y, 4, self.col)
+        # super().draw() # to see method heritage of Entities
 
 
-class En3(Entities):
-    def __init__(self, x, y, h, w, delay=0, col=YELLOW):
-        self.x = WIDTH / 2
-        self.y = HEIGHT / 2
+class En3(Enemies):
+    def __init__(self, x=WIDTH / 2, y=HEIGHT / 2, delay=0, col=YELLOW):
+        self.x = x
+        self.y = y
         self.delay = delay
         self.birth = None
         self.distance = 84
-        super().__init__(x, y, h, w, col)
+        super().__init__(x, y, delay, col)
 
     def update(self, dt, t):
 
@@ -112,6 +115,7 @@ class En3(Entities):
 
     def draw(self):
         px.circb(self.x, self.y, 4, self.col)
+        # super().draw() # to see method heritage of Entities
 
 
 class Bullet(Entities):
@@ -120,23 +124,25 @@ class Bullet(Entities):
         self.y -= 120 * dt
 
     def draw(self):
-        px.rect(self.x, self.y, self.x + self.h, self.y + self.w, self.col)
+        px.rect(self.x - 1, self.y - 1, self.x + 1, self.y + 1, self.col)
+        # super().draw() # to see method heritage of Entities
 
 
 class Spacecraft(Entities):
-    def __init__(self, x, y, h, w, col):
+    def __init__(self, x, y, col):
         self.speed = 100  # player speed per second
-        super().__init__(x, y, h, w, col)
+        self.size = 15 / 2
+        super().__init__(x, y, col)
 
     def borders_collision(self):
-        if self.x > WIDTH - self.h - 1:
-            self.x = WIDTH - self.h - 1
-        if self.x <= 0:
-            self.x = 0
-        if self.y > HEIGHT - self.w - 1:
-            self.y = HEIGHT - self.w - 1
-        if self.y < 0:
-            self.y = 0
+        if self.x > WIDTH - self.size - 1:
+            self.x = WIDTH - self.size - 1
+        if self.x < self.size:
+            self.x = self.size
+        if self.y > HEIGHT - self.size - 1:
+            self.y = HEIGHT - self.size - 1
+        if self.y < self.size:
+            self.y = self.size
 
     def player_movements(self, dt, player_bullets):
         if px.btnp(px.KEY_UP, 1, 1):
@@ -148,12 +154,12 @@ class Spacecraft(Entities):
         elif px.btnp(px.KEY_RIGHT, 1, 1):
             self.x += self.speed * dt
         if px.btnp(px.KEY_SPACE, 12, 12):
-            player_bullets.append(Bullet(self.x + 7, self.y - 2, 2, 2, 7))
+            player_bullets.append(Bullet(self.x, self.y - 2, col=7))
 
     def update(self, dt, player_bullets):
         self.player_movements(dt, player_bullets)
         self.borders_collision()
 
     def draw(self):
-        # px.rectb(self.x, self.y, self.x + self.h, self.y + self.w, self.col)
-        px.blt(self.x, self.y, 0, 0, 0, 16, 16, 0)
+        px.blt(self.x - self.size, self.y - self.size, 0, 0, 0, 16, 16, 0)
+        # super().draw() # to see method heritage of Entities
