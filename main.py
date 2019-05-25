@@ -6,6 +6,9 @@ import math
 import threading  # for debug every 1 sec
 import os
 
+def collision_detection( x1, x2, y1, y2,radius):
+    calcul = math.sqrt((x1 - x2)** 2 + (y1 - y2)**2)
+    return calcul <= radius
 
 class App:
     def __init__(self):
@@ -29,13 +32,13 @@ class App:
         en2(WIDTH / 8 * 7, direction=-1)
 
         self.ennemis = []
-        # self.run_check() # run debug info every 1 second
+        #self.run_check() # run debug info every 1 second
         px.run(self.update, self.draw)
 
     def run_check(self):
         # debug info every 1 second
         threading.Timer(1, self.run_check).start()
-        print(self.player_bullets)
+        print(self.vague)
 
     def spawn(self, t):
         if len(self.vague):
@@ -45,7 +48,11 @@ class App:
                     ennemi.birth = t
                     self.ennemis.append(ennemi)
                     self.vague.remove(ennemi)
-
+    
+    def return_e(self):
+        for e in self.ennemis:
+            return e
+    
     def update(self):
 
         t = time()       # actual time
@@ -54,15 +61,20 @@ class App:
 
         self.spawn(t)
 
+        for e in self.ennemis:
+            e.update(dt, t)
+
         self.player.update(dt, self.player_bullets)
         for bullet in self.player_bullets:
             bullet.update(dt)
             if bullet.y < 0:  # if attribute y of actual bullet is over the screen
                 # delete object at index 0 where the actual bullet is located
                 self.player_bullets.pop(0)
-
-        for e in self.ennemis:
-            e.update(dt, t)
+            if len(self.ennemis) and len(self.player_bullets):
+                if collision_detection(e.x, bullet.x, e.y, bullet.y, 20):
+                    self.ennemis.remove(e)
+                    self.player_bullets.remove(bullet)
+        
 
     def draw(self):
         px.cls(0)
