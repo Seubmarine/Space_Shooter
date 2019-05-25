@@ -80,16 +80,17 @@ class En2:
 
 
 class En3(Entities):
-    def __init__(self, x, y, h, w, col):
+    def __init__(self, x, y, h, w, delay=0, col=YELLOW):
         self.x = WIDTH / 2
         self.y = HEIGHT / 2
-        self.stt = time()
+        self.delay = delay
+        self.birth = None
         self.distance = 84
         super().__init__(x, y, h, w, col)
 
-    def update(self, dt, t, stt):
+    def update(self, dt, t):
 
-        modulo = (t - self.stt) % 1
+        modulo = (t - self.birth) % 1
 
         if modulo <= 0.25:
             self.y += self.distance * dt
