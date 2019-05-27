@@ -30,7 +30,7 @@ class Star(Entities):
         self.size = randint(0,2)
         self.speed = self.update_speed()
         self.x = randint(0, WIDTH - self.size)
-        self.y = randint(-10, 0)
+        self.y = randint(0, HEIGHT - self.size)
 
     def update(self, dt):
         vy = 100 / self.speed * dt
@@ -38,7 +38,7 @@ class Star(Entities):
         if self.y >= HEIGHT:
             self.size = randint(1,3)
             self.speed = self.update_speed()
-            self.y = randint(-10,0)
+            self.y = 0
             self.x = randint(0, WIDTH - self.size)
 
     def draw(self):
