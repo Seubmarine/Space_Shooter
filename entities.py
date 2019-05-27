@@ -27,6 +27,7 @@ class Enemies(Entities):
 class En1(Enemies):
     def __init__(self, x, delay=0, y=0, col=9):
         self.startpoint_x = x
+        self.radius = 8
         super().__init__(x, y, delay, col)
 
     def update(self, dt, t):
@@ -40,7 +41,7 @@ class En1(Enemies):
             self.y = 0
 
     def draw(self):
-        px.rectb(self.x - 8, self.y - 8, self.x + 8, self.y + 8, YELLOW)
+        px.rectb(self.x - self.radius, self.y - self.radius, self.x + self.radius, self.y + self.radius, YELLOW)
         # super().draw() # to see method heritage of Entities
 
 
@@ -50,6 +51,7 @@ class En2(Enemies):
         self.y = -8
         self.cx = x
         self.cy = self.y
+        self.radius = 4
         self.dir = direction
         super().__init__(x, y, delay, col,)
 
@@ -78,7 +80,7 @@ class En2(Enemies):
             self.cy -= HEIGHT
 
     def draw(self):
-        px.circb(self.x, self.y, 4, self.col)
+        px.circb(self.x, self.y, self.radius, self.col)
         # super().draw() # to see method heritage of Entities
 
 
@@ -86,6 +88,7 @@ class En3(Enemies):
     def __init__(self, x=WIDTH / 2, y=HEIGHT / 2, delay=0, col=YELLOW):
         self.x = x
         self.y = y
+        self.radius = 4
         self.delay = delay
         self.birth = None
         self.distance = 84
@@ -114,17 +117,21 @@ class En3(Enemies):
             self.y = HEIGHT
 
     def draw(self):
-        px.circb(self.x, self.y, 4, self.col)
+        px.circb(self.x, self.y, self.radius, self.col)
         # super().draw() # to see method heritage of Entities
 
 
 class Bullet(Entities):
 
+    def __init__(self,x,y,col):
+        self.radius = 1
+        super().__init__(x,y,col)
+
     def update(self, dt):
         self.y -= 120 * dt
 
     def draw(self):
-        px.rect(self.x - 1, self.y - 1, self.x + 1, self.y + 1, self.col)
+        px.rect(self.x - self.radius, self.y - self.radius, self.x + self.radius, self.y + self.radius, self.col)
         # super().draw() # to see method heritage of Entities
 
 
@@ -154,7 +161,7 @@ class Spacecraft(Entities):
         elif px.btnp(px.KEY_RIGHT, 1, 1):
             self.x += self.speed * dt
         if px.btnp(px.KEY_SPACE, 12, 12):
-            player_bullets.append(Bullet(self.x, self.y - 2, col=7))
+            player_bullets.append(Bullet(self.x, self.y - 2, self.col))
 
     def update(self, dt, player_bullets):
         self.player_movements(dt, player_bullets)

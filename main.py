@@ -1,14 +1,15 @@
 import pyxel as px
 from entities import Entities, Spacecraft, Bullet, En1, En2, En3
-from constants import FPS, WIDTH, HEIGHT, GREEN, RED, YELLOW
+from constants import FPS, WIDTH, HEIGHT, GREEN, RED, YELLOW, PURPLE
 from time import time
 import math
 import threading  # for debug every 1 sec
 import os
 
-def collision_detection( x1, x2, y1, y2,radius):
-    calcul = math.sqrt((x1 - x2)** 2 + (y1 - y2)**2)
-    return calcul <= radius
+def collision_detection( x1, x2, y1, y2, radius1, radius2):
+    calcul = (x1 - x2)** 2 + (y1 - y2)**2
+    maxradius = (radius1 + radius2)**2
+    return calcul <= maxradius
 
 class App:
     def __init__(self):
@@ -30,7 +31,8 @@ class App:
         self.vague = [En3(WIDTH / 2, HEIGHT, 0, GREEN),
                       En1(WIDTH / 3)]
         en2(WIDTH / 8 * 7, direction=-1)
-
+        en2(WIDTH / 8 * 2, 4, PURPLE)
+        
         self.ennemis = []
         #self.run_check() # run debug info every 1 second
         px.run(self.update, self.draw)
@@ -61,19 +63,20 @@ class App:
 
         self.spawn(t)
 
-        for e in self.ennemis:
-            e.update(dt, t)
-
         self.player.update(dt, self.player_bullets)
-        for bullet in self.player_bullets:
+        for e in self.ennemis:
+            e.update(dt,t)
+        for bullet in self.player_bullets :             
             bullet.update(dt)
-            if bullet.y < 0:  # if attribute y of actual bullet is over the screen
-                # delete object at index 0 where the actual bullet is located
-                self.player_bullets.pop(0)
-            if len(self.ennemis) and len(self.player_bullets):
-                if collision_detection(e.x, bullet.x, e.y, bullet.y, 20):
-                    self.ennemis.remove(e)
+        for e in self.ennemis:
+            for bullet in self.player_bullets :
+                if bullet.y < 0:  # if attribute y of actual bullet is over the screen
+                    # delete object at index 0 where the actual bullet is located
                     self.player_bullets.remove(bullet)
+                if len(self.ennemis) and len(self.player_bullets):
+                    if collision_detection(e.x, bullet.x, e.y, bullet.y, e.radius, bullet.radius):
+                        self.ennemis.remove(e)
+                        self.player_bullets.remove(bullet)
         
 
     def draw(self):
