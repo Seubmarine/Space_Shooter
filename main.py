@@ -1,6 +1,6 @@
 import pyxel as px
-from entities import Entities, Spacecraft, Bullet, En1, En2, En3
-from constants import FPS, WIDTH, HEIGHT, GREEN, RED, YELLOW, PURPLE
+from entities import Spacecraft, Bullet, En1, En2, En3, Star
+from constants import FPS, WIDTH, HEIGHT, GREEN, RED, YELLOW, PURPLE, WHITE
 from time import time
 import math
 import threading  # for debug every 1 sec
@@ -25,6 +25,10 @@ class App:
         self.stt = time()  # Starting Time
         self.pt = self.stt  # Buffer Time
         self.dt = 0  # initialize delta time
+        self.starfield = []
+        
+        for _ in range(20):    
+            self.starfield.append(Star())
 
         self.player = Spacecraft(WIDTH / 2 - 8, HEIGHT / 2 - 8, YELLOW)
         self.player_bullets = []
@@ -64,6 +68,8 @@ class App:
         self.spawn(t)
 
         self.player.update(dt, self.player_bullets)
+        for star in self.starfield:
+            star.update(dt)
         for e in self.ennemis:
             e.update(dt,t)
         for bullet in self.player_bullets :             
@@ -85,7 +91,8 @@ class App:
         # Test line
         px.line(WIDTH / 2, 0, WIDTH/2, HEIGHT, RED)
         px.line(0, HEIGHT/2, WIDTH, HEIGHT/2, RED)
-
+        for star in self.starfield:
+            star.draw()
         # Game intended object
         self.player.draw()
         for bullet in self.player_bullets:

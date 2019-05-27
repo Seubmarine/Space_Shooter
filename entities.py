@@ -1,7 +1,8 @@
 import pyxel as px
 import math
 from time import time
-from constants import WIDTH, HEIGHT, GREEN, RED, YELLOW
+from constants import WIDTH, HEIGHT, GREEN, RED, YELLOW, WHITE, CYAN, PURPLE
+from random import randint
 
 
 class Entities:
@@ -16,6 +17,32 @@ class Entities:
     def draw(self):
         px.line(0, 0, self.x, self.y, RED)
 
+class Star(Entities):
+    def update_speed(self):
+        if self.size == 0:
+            return 0.5
+        elif self.size == 1:
+            return 0.7
+        else:
+            return 0.9
+    
+    def __init__(self):
+        self.size = randint(0,2)
+        self.speed = self.update_speed()
+        self.x = randint(0, WIDTH - self.size)
+        self.y = randint(-10, 0)
+
+    def update(self, dt):
+        vy = 100 / self.speed * dt
+        self.y += vy
+        if self.y >= HEIGHT:
+            self.size = randint(1,3)
+            self.speed = self.update_speed()
+            self.y = randint(-10,0)
+            self.x = randint(0, WIDTH - self.size)
+
+    def draw(self):
+        px.rect(self.x, self.y, self.x + self.size, self.y + self.size, 6)
 
 class Enemies(Entities):
     def __init__(self, x, y, delay, col):
