@@ -17,6 +17,7 @@ class Entities:
     def draw(self):
         px.line(0, 0, self.x, self.y, RED)
 
+
 class Star(Entities):
     def update_speed(self):
         if self.size == 0:
@@ -25,9 +26,9 @@ class Star(Entities):
             return 0.7
         else:
             return 0.9
-    
+
     def __init__(self):
-        self.size = randint(0,2)
+        self.size = randint(0, 2)
         self.speed = self.update_speed()
         self.x = randint(0, WIDTH - self.size)
         self.y = randint(0, HEIGHT - self.size)
@@ -36,13 +37,14 @@ class Star(Entities):
         vy = 100 / self.speed * dt
         self.y += vy
         if self.y >= HEIGHT:
-            self.size = randint(1,3)
+            self.size = randint(1, 3)
             self.speed = self.update_speed()
             self.y = 0
             self.x = randint(0, WIDTH - self.size)
 
     def draw(self):
         px.rect(self.x, self.y, self.x + self.size, self.y + self.size, 6)
+
 
 class Enemies(Entities):
     def __init__(self, x, y, delay, col):
@@ -68,7 +70,8 @@ class En1(Enemies):
             self.y = 0
 
     def draw(self):
-        px.rectb(self.x - self.radius, self.y - self.radius, self.x + self.radius, self.y + self.radius, YELLOW)
+        px.rectb(self.x - self.radius, self.y - self.radius,
+                 self.x + self.radius, self.y + self.radius, YELLOW)
         # super().draw() # to see method heritage of Entities
 
 
@@ -150,15 +153,16 @@ class En3(Enemies):
 
 class Bullet(Entities):
 
-    def __init__(self,x,y,col):
+    def __init__(self, x, y, col):
         self.radius = 1
-        super().__init__(x,y,col)
+        super().__init__(x, y, col)
 
     def update(self, dt):
         self.y -= 120 * dt
 
     def draw(self):
-        px.rect(self.x - self.radius, self.y - self.radius, self.x + self.radius, self.y + self.radius, self.col)
+        px.rect(self.x - self.radius, self.y - self.radius,
+                self.x + self.radius, self.y + self.radius, self.col)
         # super().draw() # to see method heritage of Entities
 
 
