@@ -1,5 +1,5 @@
 import pyxel as px
-from entities import Spacecraft, Bullet, En1, En2, En3, Star
+from entities import Spacecraft, Bullet, En1, En2, En3, Star, EnemiesBullet
 from constants import FPS, WIDTH, HEIGHT, GREEN, RED, YELLOW, PURPLE, WHITE, CYAN
 from time import time
 import math
@@ -24,16 +24,16 @@ class App:
                 d = e * 0.15 + delay
                 self.vague.append(
                     En2(x, delay=d, col=col, direction=direction))
-
         self.stt = time()  # Starting Time
         self.pt = self.stt  # Buffer Time
         self.dt = 0  # initialize delta time
         self.starfield = []
 
-        for _ in range(20):
+        for _ in range(30):
             self.starfield.append(Star())
 
         self.player = Spacecraft(WIDTH / 2 - 8, HEIGHT / 2 - 8, YELLOW)
+        self.ennemybullet = EnemiesBullet(self.player.x, self.player.y)
         self.player_bullets = []
         self.vague = [En3(WIDTH / 2, HEIGHT, 0, GREEN),
                       En1(WIDTH / 3)]
@@ -83,9 +83,11 @@ class App:
         t = time()        # actual time
         dt = t - self.pt  # give the time between the previous update and now
         self.pt = t       # previous_time set to the actual time so that the next time it will be compared it become the differance with the new update
-
+        self.ennemybullet.update(dt)
         self.spawn(t)  # spawn ennemy in vague inside the game
         self.update_entity(dt, t)  # update all entity of the game
+        if px.btn(px.KEY_SPACE):
+            self.ennemybullet = EnemiesBullet(self.player.x, self.player.y)
 
     def draw(self):
         """Game loop for drawing on the screen"""
@@ -96,6 +98,7 @@ class App:
         px.line(0, HEIGHT/2, WIDTH, HEIGHT/2, RED)
 
         # Game intended object
+        self.ennemybullet.draw()
         for star in self.starfield:
             star.draw()
         self.player.draw()

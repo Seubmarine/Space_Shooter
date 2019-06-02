@@ -4,6 +4,8 @@ from time import time
 from constants import WIDTH, HEIGHT, GREEN, RED, YELLOW, WHITE, CYAN, PURPLE
 from random import randint
 
+def hypotenuse(x,y):
+    return math.sqrt(x**2 + y**2)
 
 class Entities:
     def __init__(self, x, y, col):
@@ -21,15 +23,15 @@ class Entities:
 class Star(Entities):
     def update_speed(self):
         if self.size == 0:
-            return 0.5
+            return randint(4,5)
         elif self.size == 1:
-            return 0.7
+            return randint(6,7)
         else:
-            return 0.9
+            return randint(8,9)
 
     def __init__(self):
         self.size = randint(0, 2)
-        self.speed = self.update_speed()
+        self.speed = self.update_speed() / 10
         self.x = randint(0, WIDTH - self.size)
         self.y = randint(0, HEIGHT - self.size)
 
@@ -38,7 +40,7 @@ class Star(Entities):
         self.y += vy
         if self.y >= HEIGHT:
             self.size = randint(1, 3)
-            self.speed = self.update_speed()
+            self.speed = self.update_speed() / 10
             self.y = 0
             self.x = randint(0, WIDTH - self.size)
 
@@ -150,6 +152,28 @@ class En3(Enemies):
         px.circb(self.x, self.y, self.radius, self.col)
         # super().draw() # to see method heritage of Entities
 
+
+class EnemiesBullet(Entities):
+    def __init__(self, playerx, playery, x=0, y=0, col=RED):
+        self.radius = 1 
+        self.x = 0
+        self.y = 0
+        distx = playerx - self.x
+        disty = playery - self.y
+        self.hyp = hypotenuse(distx, disty)
+        self.vx = distx / self.hyp
+        self.vy = disty / self.hyp
+
+        super().__init__(x, y, col)
+
+    def update(self, dt):
+        self.x += self.vx * 100 * dt
+        self.y += self.vy * 100 * dt
+        print(self.vx * 100, self.vy * 100 , hypotenuse(self.vx * 100,self.vy * 100 ))
+
+    def draw(self):
+        px.rect(self.x - self.radius, self.y - self.radius,
+                self.x + self.radius, self.y + self.radius, self.col)
 
 class Bullet(Entities):
 
