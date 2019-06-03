@@ -24,6 +24,7 @@ class App:
                 d = e * 0.15 + delay
                 self.vague.append(
                     En2(x, delay=d, col=col, direction=direction))
+
         self.stt = time()  # Starting Time
         self.pt = self.stt  # Buffer Time
         self.dt = 0  # initialize delta time
@@ -33,14 +34,13 @@ class App:
             self.starfield.append(Star())
 
         self.player = Spacecraft(WIDTH / 2 - 8, HEIGHT / 2 - 8, YELLOW)
-        self.ennemybullet = EnemiesBullet(self.player.x, self.player.y)
+        self.enemy_bullets = []
         self.player_bullets = []
         self.vague = [En3(WIDTH / 2, HEIGHT, 0, GREEN),
                       En1(WIDTH / 3)]
         en2(WIDTH / 8 * 7, direction=-1)
         en2(WIDTH / 8 * 2, 4, PURPLE)
         en2(WIDTH / 16 * 9, 10, CYAN)
-
         self.ennemis = []
         # self.run_check() # run debug info every 1 second
         px.run(self.update, self.draw)
@@ -67,8 +67,13 @@ class App:
             star.update(dt)
         for bullet in self.player_bullets:
             bullet.update(dt)
+        for e_bullet in self.enemy_bullets:
+            e_bullet.update(dt)
+            if e_bullet.y < 0 or e_bullet.y > HEIGHT or e_bullet.x < 0 or e_bullet.x > WIDTH:
+                # Destroy bullet when they collide with the screen border
+                self.enemy_bullets.remove(e_bullet)
         for e in self.ennemis:
-            e.update(dt, t)
+            e.update(dt, t, self.enemy_bullets, self.player)
             for bullet in self.player_bullets:
                 if bullet.y < 0:  # if attribute y of actual bullet is over the screen
                     # delete object at index 0 where the actual bullet is located
@@ -83,11 +88,8 @@ class App:
         t = time()        # actual time
         dt = t - self.pt  # give the time between the previous update and now
         self.pt = t       # previous_time set to the actual time so that the next time it will be compared it become the differance with the new update
-        self.ennemybullet.update(dt)
         self.spawn(t)  # spawn ennemy in vague inside the game
         self.update_entity(dt, t)  # update all entity of the game
-        if px.btn(px.KEY_SPACE):
-            self.ennemybullet = EnemiesBullet(self.player.x, self.player.y)
 
     def draw(self):
         """Game loop for drawing on the screen"""
@@ -98,12 +100,13 @@ class App:
         px.line(0, HEIGHT/2, WIDTH, HEIGHT/2, RED)
 
         # Game intended object
-        self.ennemybullet.draw()
         for star in self.starfield:
             star.draw()
         self.player.draw()
         for bullet in self.player_bullets:
             bullet.draw()
+        for e_bullet in self.enemy_bullets:
+            e_bullet.draw()
         for e in self.ennemis:
             e.draw()
 

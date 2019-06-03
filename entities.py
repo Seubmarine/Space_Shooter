@@ -4,8 +4,10 @@ from time import time
 from constants import WIDTH, HEIGHT, GREEN, RED, YELLOW, WHITE, CYAN, PURPLE
 from random import randint
 
-def hypotenuse(x,y):
+
+def hypotenuse(x, y):
     return math.sqrt(x**2 + y**2)
+
 
 class Entities:
     def __init__(self, x, y, col):
@@ -23,11 +25,11 @@ class Entities:
 class Star(Entities):
     def update_speed(self):
         if self.size == 0:
-            return randint(4,5)
+            return randint(4, 5)
         elif self.size == 1:
-            return randint(6,7)
+            return randint(6, 7)
         else:
-            return randint(8,9)
+            return randint(8, 9)
 
     def __init__(self):
         self.size = randint(0, 2)
@@ -61,7 +63,7 @@ class En1(Enemies):
         self.radius = 8
         super().__init__(x, y, delay, col)
 
-    def update(self, dt, t):
+    def update(self, dt, t, enemy_bullets, player):
 
         self.y += 40 * dt
         movx = math.cos((t - self.birth) * 4) * 16
@@ -87,7 +89,7 @@ class En2(Enemies):
         self.dir = direction
         super().__init__(x, y, delay, col,)
 
-    def update(self, dt, t):
+    def update(self, dt, t, enemy_bullets, player):
 
         self.cx += 30 * dt * self.dir
         self.cy += 20 * dt
@@ -111,6 +113,10 @@ class En2(Enemies):
             self.y = 0
             self.cy -= HEIGHT
 
+        if (t - self.birth) % 2 >= 1.9:
+            enemy_bullets.append(EnemiesBullet(
+                self.x, self.y, player.x, player.y))
+
     def draw(self):
         px.circb(self.x, self.y, self.radius, self.col)
         # super().draw() # to see method heritage of Entities
@@ -126,7 +132,7 @@ class En3(Enemies):
         self.distance = 84
         super().__init__(x, y, delay, col)
 
-    def update(self, dt, t):
+    def update(self, dt, t, enemy_bullets, player):
 
         modulo = (t - self.birth) % 1
 
@@ -154,10 +160,10 @@ class En3(Enemies):
 
 
 class EnemiesBullet(Entities):
-    def __init__(self, playerx, playery, x=0, y=0, col=RED):
-        self.radius = 1 
-        self.x = 0
-        self.y = 0
+    def __init__(self, x, y, playerx, playery, col=RED):
+        self.radius = 1
+        self.x = x
+        self.y = y
         distx = playerx - self.x
         disty = playery - self.y
         self.hyp = hypotenuse(distx, disty)
@@ -169,11 +175,11 @@ class EnemiesBullet(Entities):
     def update(self, dt):
         self.x += self.vx * 100 * dt
         self.y += self.vy * 100 * dt
-        print(self.vx * 100, self.vy * 100 , hypotenuse(self.vx * 100,self.vy * 100 ))
 
     def draw(self):
         px.rect(self.x - self.radius, self.y - self.radius,
                 self.x + self.radius, self.y + self.radius, self.col)
+
 
 class Bullet(Entities):
 
