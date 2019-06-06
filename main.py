@@ -37,7 +37,7 @@ class App:
         self.enemy_bullets = []
         self.player_bullets = []
         self.vague = [En3(WIDTH / 2, HEIGHT, 0, GREEN),
-                      En1(WIDTH / 3)]
+                      En1(WIDTH / 3), En1(WIDTH/4*3,3,col=CYAN)]
         en2(WIDTH / 8 * 7, direction=-1)
         en2(WIDTH / 8 * 2, 4, PURPLE)
         en2(WIDTH / 16 * 9, 10, CYAN)

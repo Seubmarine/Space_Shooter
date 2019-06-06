@@ -54,7 +54,15 @@ class Enemies(Entities):
     def __init__(self, x, y, delay, col):
         self.birth = None
         self.delay = delay
+        self.bullet_delay = int(time() + delay + 2)
         super().__init__(x, y, col)
+
+    def spawn_bullet(self, t, birth, bullet_enemy_list, playerx, playery, second=2):
+        #print(int(bullet_delay), int(t))
+        if self.bullet_delay == int(t):
+            self.bullet_delay += 2
+            bullet_enemy_list.append(EnemiesBullet(
+                self.x, self.y, playerx, playery))
 
 
 class En1(Enemies):
@@ -73,18 +81,18 @@ class En1(Enemies):
         if self.y > HEIGHT:
             self.y = 0
 
+        self.spawn_bullet(t, self.birth, enemy_bullets, player.x, player.y)
+
     def draw(self):
         px.rectb(self.x - self.radius, self.y - self.radius,
-                 self.x + self.radius, self.y + self.radius, YELLOW)
+                 self.x + self.radius, self.y + self.radius, self.col)
         # super().draw() # to see method heritage of Entities
 
 
 class En2(Enemies):
     def __init__(self, x, delay=0, col=RED, direction=1, y=0):
-        self.x = x
-        self.y = -8
         self.cx = x
-        self.cy = self.y
+        self.cy = self.y = -8
         self.radius = 4
         self.dir = direction
         super().__init__(x, y, delay, col,)
@@ -113,27 +121,18 @@ class En2(Enemies):
             self.y = 0
             self.cy -= HEIGHT
 
-        if (t - self.birth) % 2 >= 1.9:
-            enemy_bullets.append(EnemiesBullet(
-                self.x, self.y, player.x, player.y))
-
     def draw(self):
         px.circb(self.x, self.y, self.radius, self.col)
         # super().draw() # to see method heritage of Entities
 
 
 class En3(Enemies):
-    def __init__(self, x=WIDTH / 2, y=HEIGHT / 2, delay=0, col=YELLOW):
-        self.x = x
-        self.y = y
+    def __init__(self, x=WIDTH / 2, y=HEIGHT / 2, delay=0, col=YELLOW, bullet_delay=2):
         self.radius = 4
-        self.delay = delay
-        self.birth = None
         self.distance = 84
         super().__init__(x, y, delay, col)
 
     def update(self, dt, t, enemy_bullets, player):
-
         modulo = (t - self.birth) % 1
 
         if modulo <= 0.25:
@@ -153,6 +152,8 @@ class En3(Enemies):
             self.y = 0
         elif self.y < 0:
             self.y = HEIGHT
+
+        self.spawn_bullet(t, self.birth, enemy_bullets, player.x, player.y)
 
     def draw(self):
         px.circb(self.x, self.y, self.radius, self.col)
