@@ -72,6 +72,9 @@ class App:
             if e_bullet.y < 0 or e_bullet.y > HEIGHT or e_bullet.x < 0 or e_bullet.x > WIDTH:
                 # Destroy bullet when they collide with the screen border
                 self.enemy_bullets.remove(e_bullet)
+            if self.player and len(self.enemy_bullets):
+                if collision_detection(self.player.x, e_bullet.x, self.player.y, e_bullet.y, self.player.radius, e_bullet.radius):
+                    del(self.player)
         for e in self.ennemis:
             e.update(dt, t, self.enemy_bullets, self.player)
             for bullet in self.player_bullets:
@@ -80,6 +83,8 @@ class App:
                     self.player_bullets.remove(bullet)
                 if len(self.ennemis) and len(self.player_bullets):
                     if collision_detection(e.x, bullet.x, e.y, bullet.y, e.radius, bullet.radius):
+                        # e.impact_effect()
+                        # bullet.impact_effect
                         self.ennemis.remove(e)
                         self.player_bullets.remove(bullet)
 

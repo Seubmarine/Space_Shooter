@@ -15,39 +15,35 @@ class Entities:
         self.y = y
         self.col = col
 
-    def update(self):
+    def impact_effect(self):
         pass
-
-    def draw(self):
-        px.line(0, 0, self.x, self.y, RED)
-
 
 class Star(Entities):
     def update_speed(self):
-        if self.size == 0:
+        if self.radius == 0:
             return randint(4, 5)
-        elif self.size == 1:
+        elif self.radius == 1:
             return randint(6, 7)
         else:
             return randint(8, 9)
 
     def __init__(self):
-        self.size = randint(0, 2)
+        self.radius = randint(0, 2)
         self.speed = self.update_speed() / 10
-        self.x = randint(0, WIDTH - self.size)
-        self.y = randint(0, HEIGHT - self.size)
+        self.x = randint(0, WIDTH - self.radius)
+        self.y = randint(0, HEIGHT - self.radius)
 
     def update(self, dt):
         vy = 100 / self.speed * dt
         self.y += vy
         if self.y >= HEIGHT:
-            self.size = randint(1, 3)
+            self.radius = randint(1, 3)
             self.speed = self.update_speed() / 10
             self.y = 0
-            self.x = randint(0, WIDTH - self.size)
+            self.x = randint(0, WIDTH - self.radius)
 
     def draw(self):
-        px.rect(self.x, self.y, self.x + self.size, self.y + self.size, 6)
+        px.rect(self.x, self.y, self.x + self.radius, self.y + self.radius, 6)
 
 
 class Enemies(Entities):
@@ -200,18 +196,18 @@ class Bullet(Entities):
 class Spacecraft(Entities):
     def __init__(self, x, y, col):
         self.speed = 100  # player speed per second
-        self.size = 15 / 2
+        self.radius = 15 / 2
         super().__init__(x, y, col)
 
     def borders_collision(self):
-        if self.x > WIDTH - self.size - 1:
-            self.x = WIDTH - self.size - 1
-        if self.x < self.size:
-            self.x = self.size
-        if self.y > HEIGHT - self.size - 1:
-            self.y = HEIGHT - self.size - 1
-        if self.y < self.size:
-            self.y = self.size
+        if self.x > WIDTH - self.radius - 1:
+            self.x = WIDTH - self.radius - 1
+        if self.x < self.radius:
+            self.x = self.radius
+        if self.y > HEIGHT - self.radius - 1:
+            self.y = HEIGHT - self.radius - 1
+        if self.y < self.radius:
+            self.y = self.radius
 
     def player_movements(self, dt, player_bullets):
         if px.btnp(px.KEY_UP, 1, 1):
@@ -230,5 +226,5 @@ class Spacecraft(Entities):
         self.borders_collision()
 
     def draw(self):
-        px.blt(self.x - self.size, self.y - self.size, 0, 0, 0, 16, 16, 0)
+        px.blt(self.x - self.radius, self.y - self.radius, 0, 0, 0, 16, 16, 0)
         # super().draw() # to see method heritage of Entities
