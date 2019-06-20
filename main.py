@@ -30,14 +30,13 @@ class App:
         self.dt = 0  # initialize delta time
         self.starfield = []
 
-        for _ in range(30):
+        for _ in range(int(HEIGHT/6.5)):
             self.starfield.append(Star())
 
         self.player = Spacecraft(WIDTH / 2 - 8, HEIGHT / 2 - 8, YELLOW)
         self.enemy_bullets = []
         self.player_bullets = []
-        self.vague = [En3(WIDTH / 2, HEIGHT, 0, GREEN),
-                      En1(WIDTH / 3), En1(WIDTH/4*3,3,col=CYAN)]
+        self.vague = [En1(WIDTH / 3), En1(WIDTH/4*3,3,col=CYAN),En3(WIDTH / 2, HEIGHT, 0, GREEN),]
         en2(WIDTH / 8 * 7, direction=-1)
         en2(WIDTH / 8 * 2, 4, PURPLE)
         en2(WIDTH / 16 * 9, 10, CYAN)
@@ -74,7 +73,7 @@ class App:
                 self.enemy_bullets.remove(e_bullet)
             if self.player and len(self.enemy_bullets):
                 if collision_detection(self.player.x, e_bullet.x, self.player.y, e_bullet.y, self.player.radius, e_bullet.radius):
-                    del(self.player)
+                    pass
         for e in self.ennemis:
             e.update(dt, t, self.enemy_bullets, self.player)
             for bullet in self.player_bullets:
