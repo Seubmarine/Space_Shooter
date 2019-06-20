@@ -18,6 +18,7 @@ class Entities:
     def impact_effect(self):
         pass
 
+
 class Star(Entities):
     def update_speed(self):
         if self.radius == 0:
@@ -47,9 +48,10 @@ class Star(Entities):
 
 
 class Enemies(Entities):
-    def __init__(self, x, y, delay, col):
+    def __init__(self, x, y, delay, col, sprites):
         self.birth = None
         self.delay = delay
+        self.sprites = sprites
         self.bullet_delay = int(time() + delay + 2)
         super().__init__(x, y, col)
 
@@ -60,14 +62,25 @@ class Enemies(Entities):
             bullet_enemy_list.append(EnemiesBullet(
                 self.x, self.y, playerx, playery))
 
+    def choose_sprite(self, t, set_time):
+        """set_time is the number of second to change a frame"""
+        i = t % (set_time * 2)
+        if i < set_time:
+            self.sprite = self.sprites[0]
+        else:
+            self.sprite = self.sprites[1]
+
 
 class En1(Enemies):
-    def __init__(self, x, delay=0, y=0, col=9):
+    def __init__(self, x, delay=0, y=0, col=9, sprites=[(0, 48, 0, 16, 16, 0), (0, 64, 0, 16, 16, 0)]):
         self.startpoint_x = x
         self.radius = 8
-        super().__init__(x, y, delay, col)
+        self.sprites = sprites
+        super().__init__(x, y, delay, col, sprites)
 
     def update(self, dt, t, enemy_bullets, player):
+
+        self.choose_sprite(t, 1)
 
         self.y += 40 * dt
         movx = math.cos((t - self.birth) * 4) * 16
@@ -80,20 +93,22 @@ class En1(Enemies):
         self.spawn_bullet(t, self.birth, enemy_bullets, player.x, player.y)
 
     def draw(self):
-        px.rectb(self.x - self.radius, self.y - self.radius,
-                 self.x + self.radius, self.y + self.radius, self.col)
+        px.circb(self.x, self.y, self.radius, self.col)
+        px.blt(self.x - self.radius, self.y - self.radius, *self.sprite)
         # super().draw() # to see method heritage of Entities
 
 
 class En2(Enemies):
-    def __init__(self, x, delay=0, col=RED, direction=1, y=0):
+    def __init__(self, x, delay=0, col=RED, direction=1, y=0, sprites=[(0, 16, 0, 16, 16, 0), (0, 32, 0, 16, 16, 0)]):
         self.cx = x
         self.cy = self.y = -8
-        self.radius = 4
+        self.radius = 8
         self.dir = direction
-        super().__init__(x, y, delay, col,)
+        super().__init__(x, y, delay, col, sprites)
 
     def update(self, dt, t, enemy_bullets, player):
+
+        self.choose_sprite(t, 0.5)
 
         self.cx += 30 * dt * self.dir
         self.cy += 20 * dt
@@ -119,14 +134,16 @@ class En2(Enemies):
 
     def draw(self):
         px.circb(self.x, self.y, self.radius, self.col)
+        px.blt(self.x - self.radius, self.y - self.radius, *self.sprite)
         # super().draw() # to see method heritage of Entities
 
 
 class En3(Enemies):
-    def __init__(self, x=WIDTH / 2, y=HEIGHT / 2, delay=0, col=YELLOW, bullet_delay=2):
+    def __init__(self, x=WIDTH / 2, y=HEIGHT / 2, delay=0, col=YELLOW, bullet_delay=2, sprites=[(0, 48, 0, 16, 16, 0), (0, 64, 0, 16, 16, 0)]):
         self.radius = 4
         self.distance = 84
-        super().__init__(x, y, delay, col)
+        self.sprites = sprites
+        super().__init__(x, y, delay, col, sprites)
 
     def update(self, dt, t, enemy_bullets, player):
         modulo = (t - self.birth) % 1
