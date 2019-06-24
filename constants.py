@@ -5,7 +5,7 @@ FPS = 60
 
 # dimension
 WIDTH = 150
-HEIGHT = 200
+HEIGHT = 150
 
 # colors
 BLACK = 0

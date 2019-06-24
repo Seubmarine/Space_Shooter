@@ -93,7 +93,7 @@ class En1(Enemies):
         self.spawn_bullet(t, self.birth, enemy_bullets, player.x, player.y)
 
     def draw(self):
-        px.circb(self.x, self.y, self.radius, self.col)
+        # px.circb(self.x, self.y, self.radius, self.col)
         px.blt(self.x - self.radius, self.y - self.radius, *self.sprite)
         # super().draw() # to see method heritage of Entities
 
@@ -133,7 +133,7 @@ class En2(Enemies):
             self.cy -= HEIGHT
 
     def draw(self):
-        px.circb(self.x, self.y, self.radius, self.col)
+        # px.circb(self.x, self.y, self.radius, self.col)
         px.blt(self.x - self.radius, self.y - self.radius, *self.sprite)
         # super().draw() # to see method heritage of Entities
 

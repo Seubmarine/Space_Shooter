@@ -2,6 +2,7 @@ import pyxel as px
 from entities import Spacecraft, Bullet, En1, En2, En3, Star, EnemiesBullet
 from constants import FPS, WIDTH, HEIGHT, GREEN, RED, YELLOW, PURPLE, WHITE, CYAN
 from time import time
+from events import Button
 import math
 import threading  # for debug every 1 sec
 import os
@@ -14,10 +15,25 @@ def collision_detection(x1, x2, y1, y2, radius1, radius2):
     return calcul <= maxradius
 
 
+class MainScreen():
+    def __init__(self):
+        self.play_btn = Button(WIDTH/2, HEIGHT/2, 'Play')
+        self.quit_btn = Button(WIDTH/2, HEIGHT/4*3, 'Quit')
+
+    def update(self):
+        self.play_btn.update()
+        self.quit_btn.update()
+
+    def draw(self):
+        self.play_btn.draw()
+        self.quit_btn.draw()
+
+
 class App:
     def __init__(self):
         px.init(WIDTH, HEIGHT, fps=FPS)
         px.load(os.getcwd() + '/game_assets.pyxel')
+        px.mouse(True)
 
         def en2(x, delay=0, col=RED, direction=1):
             for e in range(7):
@@ -33,10 +49,13 @@ class App:
         for _ in range(int(HEIGHT/6.5)):
             self.starfield.append(Star())
 
+        self.button = Button(WIDTH/8*7, HEIGHT/8*6, 'Minecraft')
+        self.main_screen = MainScreen()
         self.player = Spacecraft(WIDTH / 2 - 8, HEIGHT / 2 - 8, YELLOW)
         self.enemy_bullets = []
         self.player_bullets = []
-        self.vague = [En1(WIDTH / 3), En1(WIDTH/4*3,3,col=CYAN),En3(WIDTH / 2, HEIGHT, 0, GREEN),]
+        self.vague = [En1(WIDTH / 3), En1(WIDTH/4*3, 3, col=CYAN),
+                      En3(WIDTH / 2, HEIGHT, 0, GREEN), ]
         en2(WIDTH / 8 * 7, direction=-1)
         en2(WIDTH / 8 * 2, 4, PURPLE)
         en2(WIDTH / 16 * 9, 10, CYAN)
@@ -94,6 +113,15 @@ class App:
         self.pt = t       # previous_time set to the actual time so that the next time it will be compared it become the differance with the new update
         self.spawn(t)  # spawn ennemy in vague inside the game
         self.update_entity(dt, t)  # update all entity of the game
+        self.button.update()
+        if px.btnp(px.KEY_BACKSPACE) and self.main_screen is None:
+            self.main_screen = MainScreen()
+        if not self.main_screen is None:
+            self.main_screen.update()
+            if self.main_screen.play_btn.do_action:
+                self.main_screen = None
+            elif self.main_screen.quit_btn.do_action:
+                exit()
 
     def draw(self):
         """Game loop for drawing on the screen"""
@@ -102,6 +130,9 @@ class App:
         # Test line
         px.line(WIDTH / 2, 0, WIDTH/2, HEIGHT, RED)
         px.line(0, HEIGHT/2, WIDTH, HEIGHT/2, RED)
+        self.button.draw()
+        if not self.main_screen is None:
+            self.main_screen.draw()
 
         # Game intended object
         for star in self.starfield:
