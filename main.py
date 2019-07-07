@@ -18,14 +18,17 @@ def collision_detection(x1, x2, y1, y2, radius1, radius2):
 class MainScreen():
     def __init__(self):
         self.play_btn = Button(WIDTH/2, HEIGHT/2, 'Play')
+        self.settings_btn = Button(WIDTH/2, HEIGHT/8*5, 'Settings')
         self.quit_btn = Button(WIDTH/2, HEIGHT/4*3, 'Quit')
 
     def update(self):
         self.play_btn.update()
+        self.settings_btn.update()
         self.quit_btn.update()
 
     def draw(self):
         self.play_btn.draw()
+        self.settings_btn.draw()
         self.quit_btn.draw()
 
 
@@ -48,8 +51,7 @@ class App:
 
         for _ in range(int(HEIGHT/6.5)):
             self.starfield.append(Star())
-
-        self.button = Button(WIDTH/8*7, HEIGHT/8*6, 'Minecraft')
+        
         self.main_screen = MainScreen()
         self.player = Spacecraft(WIDTH / 2 - 8, HEIGHT / 2 - 8, YELLOW)
         self.enemy_bullets = []
@@ -113,7 +115,7 @@ class App:
         self.pt = t       # previous_time set to the actual time so that the next time it will be compared it become the differance with the new update
         self.spawn(t)  # spawn ennemy in vague inside the game
         self.update_entity(dt, t)  # update all entity of the game
-        self.button.update()
+
         if px.btnp(px.KEY_BACKSPACE) and self.main_screen is None:
             self.main_screen = MainScreen()
         if not self.main_screen is None:
@@ -127,10 +129,6 @@ class App:
         """Game loop for drawing on the screen"""
         px.cls(1)
 
-        # Test line
-        px.line(WIDTH / 2, 0, WIDTH/2, HEIGHT, RED)
-        px.line(0, HEIGHT/2, WIDTH, HEIGHT/2, RED)
-        self.button.draw()
         if not self.main_screen is None:
             self.main_screen.draw()
 

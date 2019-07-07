@@ -229,11 +229,11 @@ class Spacecraft(Entities):
     def player_movements(self, dt, player_bullets):
         if px.btnp(px.KEY_UP, 1, 1):
             self.y -= self.speed * dt
-        elif px.btnp(px.KEY_DOWN, 1, 1):
+        if px.btnp(px.KEY_DOWN, 1, 1):
             self.y += self.speed * dt
-        elif px.btnp(px.KEY_LEFT, 1, 1):
+        if px.btnp(px.KEY_LEFT, 1, 1):
             self.x -= self.speed * dt
-        elif px.btnp(px.KEY_RIGHT, 1, 1):
+        if px.btnp(px.KEY_RIGHT, 1, 1):
             self.x += self.speed * dt
         if px.btnp(px.KEY_SPACE, 12, 12):
             player_bullets.append(Bullet(self.x, self.y - 2, self.col))

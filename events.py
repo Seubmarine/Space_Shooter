@@ -4,6 +4,7 @@ import pyxel as px
 class Button():
     def __init__(self, x, y, text):
         self.text = text
+        self.textlenght = len(self.text) * 1.5
         self.x = x
         self.y = y
         self.sizex = 20
@@ -31,8 +32,8 @@ class Button():
     def draw(self):
         px.rectb(self.xleft, self.yup, self.xright,
                  self.ydown, self.shadow_col)
-        px.text(self.xleft + 3, self.y, self.text, self.shadow_col)
-        px.text(self.xleft - 1 + 3, self.y-1, self.text, self.col)
+        px.text(self.x - self.textlenght, self.y, self.text, self.shadow_col)
+        px.text(self.x - 1 - self.textlenght, self.y-1, self.text, self.col)
 
 # class Event():
 #     def __init__(self, hotkey, gamestate, ellements):
