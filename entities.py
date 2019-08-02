@@ -35,8 +35,7 @@ class Star(Entities):
         self.y = randint(0, HEIGHT - self.radius)
 
     def update(self, dt):
-        vy = 100 / self.speed * dt
-        self.y += vy
+        self.y += 70 / self.speed * dt
         if self.y >= HEIGHT:
             self.radius = randint(1, 3)
             self.speed = self.update_speed() / 10
@@ -52,12 +51,12 @@ class Enemies(Entities):
         self.birth = None
         self.delay = delay
         self.sprites = sprites
-        self.bullet_delay = int(time() + delay + 2)
+        self.bullet_delay = delay + 2
         super().__init__(x, y, col)
 
     def spawn_bullet(self, t, birth, bullet_enemy_list, playerx, playery, second=2):
         #print(int(bullet_delay), int(t))
-        if self.bullet_delay == int(t):
+        if self.bullet_delay <= t:
             self.bullet_delay += 2
             bullet_enemy_list.append(EnemiesBullet(
                 self.x, self.y, playerx, playery))

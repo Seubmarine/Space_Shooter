@@ -45,13 +45,17 @@ class App:
                     En2(x, delay=d, col=col, direction=direction))
 
         self.stt = time()  # Starting Time
-        self.pt = self.stt  # Buffer Time
-        self.dt = 0  # initialize delta time
+        self.pt = 0  # Buffer Time
+        self.pause_time = 0
+        self.buffer_time = 0
+        self.slowtime = 1
+        self.pause = False
+
         self.starfield = []
 
         for _ in range(int(HEIGHT/6.5)):
             self.starfield.append(Star())
-        
+
         self.main_screen = MainScreen()
         self.player = Spacecraft(WIDTH / 2 - 8, HEIGHT / 2 - 8, YELLOW)
         self.enemy_bullets = []
@@ -73,7 +77,7 @@ class App:
     def spawn(self, t):
         """For every enemy in the vague transfer it to the ennemis list when the given set time of the enemy happens """
         if len(self.vague):
-            time_past = t - self.stt
+            time_past = t
             for ennemi in self.vague.copy():
                 if time_past >= ennemi.delay:
                     ennemi.birth = t
@@ -110,11 +114,28 @@ class App:
 
     def update(self):
         """Game loop for coordinate, time, event, update and more"""
-        t = time()        # actual time
-        dt = t - self.pt  # give the time between the previous update and now
+        looptime = time() - self.stt  # time since the loop started
+
+        if self.pause is True:
+            t = self.buffer_time
+            self.pause_time = looptime - self.buffer_time
+        else:
+            t = looptime - self.pause_time
+
+        # give the time between the previous update and now
+        dt = (t - self.pt) * self.slowtime
         self.pt = t       # previous_time set to the actual time so that the next time it will be compared it become the differance with the new update
         self.spawn(t)  # spawn ennemy in vague inside the game
         self.update_entity(dt, t)  # update all entity of the game
+
+        if px.btnp(px.KEY_P):
+            if self.pause is False:
+                self.pause = True
+                self.buffer_time = t
+                self.slowtime = 0
+            elif self.pause is True:
+                self.pause = False
+                self.slowtime = 1
 
         if px.btnp(px.KEY_BACKSPACE) and self.main_screen is None:
             self.main_screen = MainScreen()
