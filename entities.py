@@ -1,5 +1,6 @@
 import pyxel as px
 import math
+from vector import Vector2D
 from time import time
 from constants import WIDTH, HEIGHT, GREEN, RED, YELLOW, WHITE, CYAN, PURPLE
 from random import randint
