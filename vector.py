@@ -1,5 +1,6 @@
 from math import sqrt
 
+
 class Vector2D:
     def __init__(self, x, y):
         self.x = x
@@ -28,19 +29,48 @@ class Vector2D:
     def replace(self, vector2):
         self.x = vector2.x
         self.y = vector2.y
-    
+
+    def reuseVector(self, x, y):
+        self.x = x
+        self.y = y
+
     def magnitude(self):
-        return sqrt(self.x*self.x + self.y*self.y)
+        return self.x*self.x + self.y*self.y
+
+    def sqrMagnitude(self):
+        return sqrt(self.magnitude())
 
     def normalize(self):
-        m = self.magnitude()
+        m = self.sqrMagnitude()
         if m != 0:
             self.divide(m)
+
+    def reverse(self):
+        self.x = self.x * -1
+        self.y = self.y * -1
 
     def limit(self, number):
         if self.y <= number:
             self.y = number
 
-    def distancefromvector(self,vector2):
+    def distancefromvector(self, vector2):
         self.substract(vector2)
         self.normalize()
+
+    def returned(self, vector2):
+        return vector2.x, vector2.y
+
+    def collide(self, vector2):
+        return (self.x - vector2.x) ** 2 + (self.y - vector2.y)**2
+
+    def up(self, velocity):
+        self.y -= velocity
+
+    def down(self, velocity):
+        self.y += velocity
+
+    def left(self, velocity):
+        self.x -= velocity
+
+    def right(self, velocity):
+        self.x += velocity

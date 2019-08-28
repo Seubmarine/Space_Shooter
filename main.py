@@ -1,6 +1,7 @@
 import pyxel as px
-from entities import Spacecraft, Bullet, En1, En2, En3, Star, EnemiesBullet
+from entities import Bullet, Star, EnemiesBullet, Spacecraft, En1, En2, En3, Boss1
 from constants import FPS, WIDTH, HEIGHT, GREEN, RED, YELLOW, PURPLE, WHITE, CYAN
+from vector import Vector2D
 from time import time
 from events import Button
 import math
@@ -8,10 +9,9 @@ import threading  # for debug every 1 sec
 import os
 
 
-def collision_detection(x1, x2, y1, y2, radius1, radius2):
-    """Pythagore's theorem to know the distance between two points"""
-    calcul = (x1 - x2) ** 2 + (y1 - y2)**2
-    maxradius = (radius1 + radius2)**2
+def collision_detection(vector1, vector2, radius1, radius2):
+    calcul = vector1.collide(vector2)
+    maxradius = (radius1 + radius2) ** 2
     return calcul <= maxradius
 
 
@@ -42,7 +42,7 @@ class App:
             for e in range(7):
                 d = e * 0.15 + delay
                 self.vague.append(
-                    En2(x, delay=d, col=col, direction=direction))
+                    En2(x, delay=d, direction=direction))
 
         self.stt = time()  # Starting Time
         self.pt = 0  # Buffer Time
@@ -57,14 +57,17 @@ class App:
             self.starfield.append(Star())
 
         self.main_screen = MainScreen()
-        self.player = Spacecraft(WIDTH / 2 - 8, HEIGHT / 2 - 8, YELLOW)
+        # self.player = Spacecraft(WIDTH / 2 - 8, HEIGHT / 2 - 8, YELLOW)
+        self.player = Spacecraft()
         self.enemy_bullets = []
         self.player_bullets = []
-        self.vague = [En1(WIDTH / 3), En1(WIDTH/4*3, 3, col=CYAN),
-                      En3(WIDTH / 2, HEIGHT, 0, GREEN), ]
+        self.vague = [En1(WIDTH / 3, 0.5),
+                      En3(WIDTH / 2, HEIGHT, 0), En1(WIDTH/2, 0), Boss1()
+                      ]
         en2(WIDTH / 8 * 7, direction=-1)
         en2(WIDTH / 8 * 2, 4, PURPLE)
         en2(WIDTH / 16 * 9, 10, CYAN)
+
         self.ennemis = []
         # self.run_check() # run debug info every 1 second
         px.run(self.update, self.draw)
@@ -93,22 +96,20 @@ class App:
             bullet.update(dt)
         for e_bullet in self.enemy_bullets:
             e_bullet.update(dt)
-            if e_bullet.y < 0 or e_bullet.y > HEIGHT or e_bullet.x < 0 or e_bullet.x > WIDTH:
+            if e_bullet.location.y < 0 or e_bullet.location.y > HEIGHT or e_bullet.location.x < 0 or e_bullet.location.x > WIDTH:
                 # Destroy bullet when they collide with the screen border
                 self.enemy_bullets.remove(e_bullet)
             if self.player and len(self.enemy_bullets):
-                if collision_detection(self.player.x, e_bullet.x, self.player.y, e_bullet.y, self.player.radius, e_bullet.radius):
-                    pass
+                # if collision_detection(self.player.x, e_bullet.x, self.player.y, e_bullet.y, self.player.radius, e_bullet.radius):
+                pass
         for e in self.ennemis:
             e.update(dt, t, self.enemy_bullets, self.player)
             for bullet in self.player_bullets:
-                if bullet.y < 0:  # if attribute y of actual bullet is over the screen
+                if bullet.location.y < 0:  # if attribute y of actual bullet is over the screen
                     # delete object at index 0 where the actual bullet is located
                     self.player_bullets.remove(bullet)
                 if len(self.ennemis) and len(self.player_bullets):
-                    if collision_detection(e.x, bullet.x, e.y, bullet.y, e.radius, bullet.radius):
-                        # e.impact_effect()
-                        # bullet.impact_effect
+                    if collision_detection(e.location, bullet.location, e.radius, bullet.radius):
                         self.ennemis.remove(e)
                         self.player_bullets.remove(bullet)
 
